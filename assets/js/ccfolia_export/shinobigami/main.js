@@ -291,7 +291,7 @@ function setResult(datas) {
   params.push({ label: "ファンブル表", value: "FT" });
   params.push({ label: "変調表", value: "WT" });
 
-  if (options.memo.mention_player && !checkBlank(public.base.player)) memo.push(`PL: ${public.base.player}`);
+  if (options.memo.mention_player.checked && !checkBlank(public.base.player)) memo.push(`PL: ${public.base.player}`);
   if (options.memo.mention_sex.checked && !checkBlank(public.base.sex)) memo.push(`性別 : ${public.base.sex}`);
   if (options.memo.mention_age.checked && !checkBlank(public.base.age)) memo.push(`年齢 : ${public.base.age}`);
   if (options.memo.mention_cover.checked && !checkBlank(public.base.cover)) memo.push(`表の顔 : ${public.base.cover}`);
@@ -343,6 +343,7 @@ function setResult(datas) {
   if (options.memo.mention_ninpou.checked && public.ninpou.length > 0) {
     const ninpou = [];
     for (const element of public.ninpou) {
+      if (checkBlank(element.name)) continue;
       const data = [];
       data.push(setAddCornerBrackets(element.name.replace("\n", " ")));
       if (options.ninpou.mention_type.checked && !checkBlank(element.type)) data.push(`${element.type}忍法`);
@@ -460,6 +461,7 @@ function setResult(datas) {
   if (options.chat_palette.mention_ninpou.checked) {
     const data = [];
     for (const element of public.ninpou) {
+      if (checkBlank(element.name)) continue;
       const ninpou = [];
       ninpou.push(setAddCornerBrackets(element.name.replace("\n", " ")));
       if (options.ninpou.mention_type.checked && !checkBlank(element.type)) ninpou.push(`${element.type}忍法`);
@@ -479,6 +481,7 @@ function setResult(datas) {
   if (use_secret && options.chat_palette.mention_hidden_ninpou.checked && secret.ninpou != null) {
     const data = [];
     for (const element of secret.ninpou) {
+      if (checkBlank(element.name)) continue;
       const ninpou = [];
       ninpou.push(setAddCornerBrackets(element.name.replace("\n", " ")));
       if (options.ninpou.mention_type.checked && !checkBlank(element.type)) ninpou.push(`${element.type}忍法`);
@@ -504,6 +507,7 @@ function setResult(datas) {
     if (options.chat_palette.mention_special_effect.checked) {
       const data = [];
       for (const element of secret.specialEffect) {
+      if (checkBlank(element.name)) continue;
         const text = [];
         text.push(element.name.replace("\n", " "));
         if (options.special_effect.mention_skill.checked && !checkBlank(element.skill)) text.push(setAddDoubleParentheses(element.skill));
@@ -529,15 +533,17 @@ function setResult(datas) {
 
   chat_palette.push(`@チャントパレット変数\n${chat_palette_variable.map((value) => `//${value}`).join("\n")}`);
 
-  const url = character_sheets_url.value;
   let externalUrl = "";
-  switch (checkURL(url)) {
-    case 0:
-      externalUrl = url;
-      break;
-    case 1:
-      externalUrl = `https://character-sheets.appspot.com/shinobigami/edit.html?key=${url}`;
-      break;
+  if (options.base.mention_url.checked) {
+    const url = character_sheets_url.value;
+    switch (checkURL(url)) {
+      case 0:
+        externalUrl = url;
+        break;
+      case 1:
+        externalUrl = `https://character-sheets.appspot.com/shinobigami/edit.html?key=${url}`;
+        break;
+    }
   }
   const json = {
     kind: "character",

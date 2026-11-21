@@ -21,20 +21,22 @@ function getRequest(key) {
       }),
   );
   const pass = character_sheets_password ? character_sheets_password.value : void 0;
-  requests.push(
-    $.ajax({ dataType: "jsonp", url: `https://character-sheets.appspot.com/${system}/openSecret?key=${key}&pass=${pass}`, type: "get" })
-      .done((data, status, xhr, never) => {
-        if (data.error) {
-          alert(data.error);
+  if (options.base.use_password.checked) {
+    requests.push(
+      $.ajax({ dataType: "jsonp", url: `https://character-sheets.appspot.com/${system}/openSecret?key=${key}&pass=${pass}`, type: "get" })
+        .done((data, status, xhr, never) => {
+          if (data.error) {
+            alert(data.error);
+            return null;
+          }
+          return data;
+        })
+        .fail((xhr, status, thrown) => {
+          console.error(`Error fetching "https://character-sheets.appspot.com/${system}/openSecret":`, status, thrown);
           return null;
-        }
-        return data;
-      })
-      .fail((xhr, status, thrown) => {
-        console.error(`Error fetching "https://character-sheets.appspot.com/${system}/openSecret":`, status, thrown);
-        return null;
-      }),
-  );
+        }),
+    );
+  }
   return requests;
 }
 
